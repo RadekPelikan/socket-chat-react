@@ -21,14 +21,17 @@ export const slice = createSlice({
       state.rooms.splice(action.payload, 1);
     },
     addUser: (state, action) => {
-      const { id, userName } = action.payload;
-      state.rooms.filter((item) => item.id === id)[0].users.push(userName);
+      const { id, user: {fullid} } = action.payload;
+      const users = state.rooms.filter((item) => item.id === id)[0].users
+      if (users.includes(fullid)) return
+      users.push(fullid);
     },
     removeUser: (state, action) => {
-      const { id, userName } = action.payload;
+      const { id, user } = action.payload;
+      const fullid = `${user.userName}#${user.id}`
       const roomIndex = state.rooms.findIndex((item) => item.id == id);
       const users = state.rooms[roomIndex].users;
-      users.splice(users.indexOf(userName), 1);
+      users.splice(users.indexOf(fullid), 1);
     },
   },
 });

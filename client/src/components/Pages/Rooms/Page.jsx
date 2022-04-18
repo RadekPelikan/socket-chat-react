@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import PropTypes from "prop-types";
 import { Container, Flex, Form, Input } from "../../styles";
 import { useSelector, useDispatch } from "react-redux";
@@ -6,9 +6,10 @@ import { setRoom, setUserName } from "../../../services/user/userSlice";
 import { addRoom } from "../../../services/rooms/roomsSlice";
 import RoomCard from "./RoomCard";
 import { CardContainer } from "./styles";
+import {SocketContext} from '../../../context/socket';
 
 const Page = (props) => {
-  const { socket } = useSelector((state) => state.socket);
+  const socket = useContext(SocketContext);
   const { rooms } = useSelector((state) => state.rooms);
   const { userName, id } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -16,6 +17,9 @@ const Page = (props) => {
   const [newUserName, setNewUserName] = useState(userName);
 
   useEffect(() => {}, [socket]);
+
+
+  useEffect(() => {setNewUserName(userName)}, [userName]);
 
   const createRoom = (e) => {
     e.preventDefault();
@@ -27,7 +31,8 @@ const Page = (props) => {
   const changeName = (e) => {
     e.preventDefault();
     if (newUserName === "") return;
-    dispatch(setUserName({socket, userName: newUserName}));
+    socket.emit("user-change-name", { userName: newUserName, id: id });
+    dispatch(setUserName(newUserName));
   };
 
   return (

@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import PropTypes from "prop-types";
 import { Route, Routes } from "react-router-dom";
-import io from "socket.io-client";
 import { ChatPage, RoomsPage } from "./components/Pages";
 import { ThemeProvider } from "styled-components";
 import GlobalStyles from "./components/styles/Global";
 import { useDispatch } from "react-redux";
-import { setSocket } from "./services/socket/socketSlice";
 import { setID, setUserName } from "./services/user/userSlice";
-
-const socket = io.connect(process.env.REACT_APP_SERVER_IP);
+import {SocketContext} from './context/socket';
 
 const App = (props) => {
   const theme = {
@@ -28,15 +25,15 @@ const App = (props) => {
     },
   };
 
+  const socket = useContext(SocketContext);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setSocket(socket));
-    socket.on("user-asign-id", ({id, userName}) => {
+    socket.on("user:asign-id", ({id, userName}) => {
       dispatch(setID({id}));
-      dispatch(setUserName({userName}))
+      dispatch(setUserName(userName))
     });
-  }, []);
+  }, [socket]);
 
   return (
     <>

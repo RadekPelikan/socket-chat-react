@@ -8,11 +8,11 @@ import { removeUser } from "../../../services/rooms/roomsSlice";
 const Page = (props) => {
   const dispatch = useDispatch();
   const { roomID } = useParams();
-  const { userName } = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user);
   return (
     <>
       <Container>
-        <Link to="/" onClick={() => dispatch(removeUser({ id: roomID, userName }))}>
+        <Link to="/" onClick={() => dispatch(removeUser({ id: roomID, user }))}>
           <button>LEAVE CHAT</button>
         </Link>
       </Container>

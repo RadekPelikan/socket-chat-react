@@ -5,15 +5,18 @@ import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./app/store";
 import * as serviceWorker from "./serviceWorker";
+import {SocketContext, socket} from './context/socket';
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-  <Provider store={store}>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </Provider>
+    <Provider store={store}>
+      <SocketContext.Provider value={socket}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </SocketContext.Provider>
+    </Provider>
   </React.StrictMode>
 );
 

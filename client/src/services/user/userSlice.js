@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   id: null,
   userName: "",
+  fullid: "",
   room: ""
 };
 
@@ -10,9 +11,9 @@ export const slice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setUserName: (state, {payload: {socket, userName}}) => {
-      socket?.emit("user-change-name", { userName, id: state.id });
-      state.userName = userName;
+    setUserName: (state, {payload}) => {
+      state.userName = payload;
+      state.fullid = `${payload}#${state.id}`
     },
     setRoom: (state, {payload: {socket, room}}) => {
       state.room = room;

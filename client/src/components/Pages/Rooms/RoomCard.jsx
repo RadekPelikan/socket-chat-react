@@ -10,11 +10,11 @@ import { addUser } from "../../../services/rooms/roomsSlice";
 
 const RoomCard = ({ room }) => {
   const dispatch = useDispatch();
-  const {userName} = useSelector((state) => state.user)
+  const user = useSelector((state) => state.user)
   return (
     <>
     <Link to={`chat/${room.id}`}>
-      <Card onClick={() => dispatch(addUser({id: room.id, userName}))}>
+      <Card onClick={() => dispatch(addUser({id: room.id, user}))}>
         <div>
           <h4>{room.name || "No name"}</h4>
           <div>

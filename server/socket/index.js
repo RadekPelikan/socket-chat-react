@@ -12,10 +12,9 @@ module.exports = (io) => {
     console.log(`${socket.data.fullid} connected`);
     console.log(`Active users: ${[...activeUsers]}`);
 
-    socket.emit("user-asign-id", { userName: defaultName, id });
+    socket.emit("user:asign-id", { userName: defaultName, id });
 
     socket.on("user-change-name", ({ userName, id }) => {
-      console.log(userName);
       activeUsers.delete(socket.data.fullid);
       socket.data.fullid = `${userName}#${id}`;
       activeUsers.add(socket.data.fullid);
