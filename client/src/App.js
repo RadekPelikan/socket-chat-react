@@ -6,7 +6,8 @@ import { ChatPage, RoomsPage } from "./components/Pages";
 import { ThemeProvider } from "styled-components";
 import GlobalStyles from "./components/styles/Global";
 import { useDispatch } from "react-redux";
-import {setSocket} from "./services/socket/socketSlice"
+import { setSocket } from "./services/socket/socketSlice";
+import { setID, setUserName } from "./services/user/userSlice";
 
 const socket = io.connect(process.env.REACT_APP_SERVER_IP);
 
@@ -30,8 +31,12 @@ const App = (props) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setSocket(socket))
-  }, [])
+    dispatch(setSocket(socket));
+    socket.on("user-asign-id", ({id, userName}) => {
+      dispatch(setID({id}));
+      dispatch(setUserName({userName}))
+    });
+  }, []);
 
   return (
     <>

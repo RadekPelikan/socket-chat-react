@@ -1,18 +1,29 @@
+const generateID = require("../middlewares/generateID");
+const defaultName = "user";
+
+const activeUsers = new Set();
+
 module.exports = (io) => {
   io.on("connection", (socket) => {
-    console.log(`User Connected: ${socket.id}`);
+    const id = generateID([...activeUsers]);
+    socket.data.fullid = `${defaultName}#${id}`;
+    activeUsers.add(socket.data.fullid);
 
-    socket.on("join_room", (data) => {
-      socket.join(data);
-      console.log(`User with ID: ${socket.id} joined room: ${data}`);
-    });
+    console.log(`${socket.data.fullid} connected`);
+    console.log(`Active users: ${[...activeUsers]}`);
 
-    socket.on("send_message", (data) => {
-      socket.to(data.room).emit("receive_message", data);
+    socket.emit("user-asign-id", { userName: defaultName, id });
+
+    socket.on("user-change-name", ({ userName, id }) => {
+      console.log(userName);
+      activeUsers.delete(socket.data.fullid);
+      socket.data.fullid = `${userName}#${id}`;
+      activeUsers.add(socket.data.fullid);
     });
 
     socket.on("disconnect", () => {
-      console.log("User Disconnected", socket.id);
+      activeUsers.delete(socket.data.fullid);
+      console.log(`${socket.data.fullid} disconnected`);
     });
   });
 };

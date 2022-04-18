@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { Container, Flex, Form,Input } from "../../styles";
+import { Container, Flex, Form, Input } from "../../styles";
 import { useSelector, useDispatch } from "react-redux";
 import { setRoom, setUserName } from "../../../services/user/userSlice";
 import { addRoom } from "../../../services/rooms/roomsSlice";
@@ -8,29 +8,41 @@ import RoomCard from "./RoomCard";
 import { CardContainer } from "./styles";
 
 const Page = (props) => {
-  const {socket} = useSelector((state) => state.socket);
+  const { socket } = useSelector((state) => state.socket);
   const { rooms } = useSelector((state) => state.rooms);
-  const { userName } = useSelector((state) => state.user);
+  const { userName, id } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [roomName, setRoomName] = useState("");
+  const [newUserName, setNewUserName] = useState(userName);
 
   useEffect(() => {}, [socket]);
 
   const createRoom = (e) => {
     e.preventDefault();
     if (roomName === "") return;
-    dispatch(addRoom({name: roomName}));
+    dispatch(addRoom({ name: roomName }));
     setRoomName("");
+  };
+
+  const changeName = (e) => {
+    e.preventDefault();
+    if (newUserName === "") return;
+    dispatch(setUserName({socket, userName: newUserName}));
   };
 
   return (
     <>
       <Container>
-        <Input
-          type="text"
-          value={userName}
-          onChange={(e) => dispatch(setUserName(e.target.value))}
-        />
+        <Form onSubmit={changeName}>
+          <input
+            type="text"
+            value={newUserName}
+            onChange={({ target: { value } }) =>
+              value.length < 16 && setNewUserName(value)
+            }
+          />
+          <input type="submit" value="CHANGE NAME" />
+        </Form>
         <Form onSubmit={createRoom}>
           <input
             type="text"
